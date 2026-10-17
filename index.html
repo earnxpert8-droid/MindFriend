@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>سجل العمل</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1B3B6F">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="سجل العمل">
+<meta name="description" content="سجل العمل — تسجيل أيام العمل والمواقع والمستحقات، بأسلوب احترافي ويعمل بلا إنترنت.">
+<style>
+:root{--navy:#1B3B6F;--navy2:#144272;--blue:#0D6EFD;--green:#2EB872;--green2:#1E824C;--amber:#F39C12;--amber2:#E67E22;--red:#E74C3C;--indigo:#3F51B5;--steel:#20639B;--teal:#17B0A0;--bg:#F0F2F5;--card:#fff;--fg:#1B2433;--mut:#6B7587;--line:#E3E7ED;--sky:#E8F2FB;--warn:#FFF6E0;--linew:#F0D9A0;--soft:#F7F9FC}
+html[data-theme="dark"]{--bg:#0F141C;--card:#1A2230;--fg:#EAF0F8;--mut:#9AA5B8;--line:#2A3444;--sky:#16243A;--warn:#3A2F14;--linew:#6A5320;--soft:#141B26}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;background:#DDE2EA;font-family:"Noto Sans Arabic",Roboto,Tahoma,Arial,sans-serif;color:var(--fg);-webkit-text-size-adjust:100%}
+#app{position:relative;max-width:430px;margin:0 auto;min-height:100%;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+.scr{display:none;flex-direction:column;min-height:100%;padding-bottom:74px}
+.scr.on{display:flex}
+.top{background:var(--navy);color:#fff;padding:calc(10px + env(safe-area-inset-top)) 12px 10px;display:flex;align-items:center;gap:10px;position:relative;z-index:5}
+.top .ti{display:flex;align-items:center;gap:7px;font-weight:700;font-size:16px;flex:1;justify-content:center}
+.top .ic{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:9px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);font-size:15px;cursor:pointer;flex:0 0 auto}
+.top .ttl{display:flex;flex-direction:column;align-items:center;line-height:1.25}
+.top .ttl b{font-size:16px}
+.top .ttl i{font-style:normal;font-size:10.5px;opacity:.85;font-weight:500}
+.body{flex:1;overflow:auto;padding:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;box-shadow:0 1px 3px rgba(20,40,80,.05);margin-bottom:11px}
+.sect{font-size:12.5px;font-weight:700;color:var(--mut);margin:14px 4px 8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.st{border-radius:14px;padding:11px 10px;color:#fff;display:flex;flex-direction:column;gap:2px;min-height:78px;justify-content:center;align-items:center;text-align:center}
+.st b{font-size:22px;line-height:1.1}
+.st span{font-size:11.5px;opacity:.95}
+.st.g{background:linear-gradient(160deg,#34C57E,#1E824C)}
+.st.a{background:linear-gradient(160deg,#F5A623,#E67E22)}
+.st.i{background:linear-gradient(160deg,#4A5FC1,#3F51B5)}
+.st.s{background:linear-gradient(160deg,#2C7BC4,#20639B)}
+.hero{background:linear-gradient(120deg,#1B3B6F,#2E5B96);border-radius:16px;padding:13px;color:#fff;display:flex;align-items:center;gap:11px;margin-bottom:11px;position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:0;background:radial-gradient(120px 80px at 85% 15%,rgba(243,156,18,.28),transparent)}
+.hero .av{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font-size:22px;z-index:1}
+.hero .hx{z-index:1}
+.hero .hx span{font-size:11.5px;opacity:.9;display:block}
+.hero .hx b{font-size:17px}
+.mbar{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:9px 12px;margin-bottom:11px;font-weight:700;color:var(--navy)}
+html[data-theme="dark"] .mbar{color:#CFE0FF}
+.mbar .ar{background:var(--soft);border:1px solid var(--line);border-radius:9px;width:30px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:var(--fg)}
+.mbar select{border:0;background:transparent;font:inherit;font-weight:700;color:inherit;text-align:center;outline:none;max-width:170px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;border-radius:12px;padding:13px;font:700 14.5px "Noto Sans Arabic",Tahoma,Arial;cursor:pointer}
+.btn.b{background:var(--blue);color:#fff}
+.btn.n{background:var(--navy);color:#fff}
+.btn.g{background:var(--green);color:#fff}
+.btn.d{background:var(--red);color:#fff}
+.btn.o{background:transparent;color:var(--navy);border:1.5px solid var(--navy2)}
+html[data-theme="dark"] .btn.o{color:#BBD3FF;border-color:#4E77B8}
+.btn.gh{background:var(--soft);color:var(--mut);border:1px solid var(--line)}
+.chips{display:flex;gap:8px;margin-bottom:10px}
+.chip{flex:1;border-radius:11px;padding:8px;display:flex;align-items:center;justify-content:center;gap:6px;font-weight:700;font-size:12.5px}
+.chip.g{background:rgba(46,184,114,.13);color:var(--green2);border:1px solid rgba(46,184,114,.4)}
+.chip.a{background:rgba(243,156,18,.14);color:#B8670A;border:1px solid rgba(243,156,18,.45)}
+.chip.i{background:rgba(63,81,181,.12);color:#3F51B5;border:1px solid rgba(63,81,181,.35)}
+.chip.s{background:rgba(32,99,155,.12);color:#20639B;border:1px solid rgba(32,99,155,.35)}
+.money{display:flex;justify-content:space-between;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:10px 13px;margin-bottom:10px;font-weight:700;font-size:13px}
+.money span{color:var(--mut);font-weight:600;margin-inline-end:5px}
+.tw{background:var(--card);border:1px solid var(--line);border-radius:13px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:11.5px;table-layout:fixed}
+thead th{background:var(--navy);color:#fff;padding:7px 3px;font-size:10.5px;font-weight:700;position:sticky;top:0;z-index:2}
+tbody td{padding:6px 3px;text-align:center;border-top:1px solid var(--line);font-variant-numeric:tabular-nums}
+tbody tr:nth-child(even) td{background:var(--soft)}
+tbody tr.off td{background:rgba(243,156,18,.10)}
+.pill{display:inline-block;border-radius:7px;padding:2px 7px;font-weight:700;font-size:10.5px;min-width:34px}
+.pill.y{background:rgba(46,184,114,.16);color:var(--green2)}
+.pill.n{background:rgba(231,76,60,.14);color:#C0392B}
+.pill.d{background:var(--soft);color:var(--mut)}
+html[data-theme="dark"] .pill.n{color:#FF9B90}
+html[data-theme="dark"] .pill.y{color:#7CE0AC}
+.li{display:flex;align-items:center;gap:11px;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:11px 12px;margin-bottom:9px;cursor:pointer}
+.li .ii{width:36px;height:36px;border-radius:10px;background:var(--sky);display:flex;align-items:center;justify-content:center;font-size:17px;flex:0 0 auto}
+.li .tx{flex:1;min-width:0}
+.li .tx b{display:block;font-size:13.5px}
+.li .tx span{display:block;font-size:11px;color:var(--mut);margin-top:2px}
+.li.dngr .tx b{color:var(--red)}
+.li.dngr .ii{background:rgba(231,76,60,.12)}
+.li .ch{color:var(--mut);font-size:15px}
+.fl{margin-bottom:11px}
+.fl>label{display:block;font-size:12.5px;font-weight:700;margin:0 3px 6px;color:var(--navy)}
+html[data-theme="dark"] .fl>label{color:#CFE0FF}
+.inp{width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px;font:inherit;font-size:14px;color:var(--fg);outline:none}
+.inp:focus{border-color:var(--blue)}
+.seg{display:flex;gap:7px}
+.seg button{flex:1;border:1.5px solid var(--line);background:var(--card);border-radius:11px;padding:11px;font:700 13.5px "Noto Sans Arabic",Tahoma;color:var(--mut);cursor:pointer}
+.seg button.on[data-v="نعم"]{background:var(--green);border-color:var(--green);color:#fff}
+.seg button.on[data-v="لا"]{background:#F4A9A0;border-color:#E4807A;color:#7B2C22}
+.seg button.on[data-v=""]{background:#8A97AB;border-color:#8A97AB;color:#fff}
+.note{font-size:10.5px;color:var(--mut);margin:6px 3px 0;line-height:1.7}
+.hint{font-size:11px;color:var(--mut);line-height:1.7;margin:5px 3px}
+.alert{background:var(--warn);border:1px solid var(--linew);border-radius:12px;padding:11px;font-size:12px;line-height:1.8;display:flex;gap:9px;margin-bottom:11px}
+.alert .ai{font-size:17px;flex:0 0 auto}
+.nav{position:fixed;bottom:0;left:0;right:0;max-width:430px;margin:0 auto;background:var(--navy);display:flex;padding:6px 4px calc(6px + env(safe-area-inset-bottom));z-index:20;border-top:1px solid rgba(255,255,255,.10)}
+.nav button{flex:1;background:transparent;border:0;color:rgba(255,255,255,.62);display:flex;flex-direction:column;align-items:center;gap:2px;font:600 10.5px "Noto Sans Arabic",Tahoma;padding:5px 0;border-radius:10px;cursor:pointer}
+.nav button i{font-size:19px;font-style:normal;line-height:1}
+.nav button.on{color:#fff;background:rgba(255,255,255,.12)}
+.ring{display:flex;align-items:center;gap:12px}
+.ring svg{flex:0 0 auto}
+.ring .ct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.3}
+.ring .ct span{font-size:9.5px;color:var(--mut)}
+.ring .ct b{font-size:16px;color:var(--fg)}
+.ring .ct i{font-style:normal;font-size:9.5px;color:var(--mut)}
+.lg{display:flex;flex-direction:column;gap:9px;flex:1}
+.lg .r{display:flex;align-items:center;gap:8px;font-size:12px}
+.lg .r b{margin-inline-start:auto;font-size:14px}
+.dot{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
+.bar{margin-bottom:9px}
+.bar .top2{display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:4px}
+.bar .tr{height:8px;background:var(--soft);border-radius:5px;overflow:hidden}
+.bar .tr i{display:block;height:100%;border-radius:5px}
+.tabs{display:flex;gap:7px;margin-bottom:11px}
+.tabs button{flex:1;border:1.5px solid var(--line);background:var(--card);border-radius:11px;padding:9px;font:700 12.5px "Noto Sans Arabic",Tahoma;color:var(--mut);cursor:pointer}
+.tabs button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.sw{width:44px;height:25px;border-radius:14px;background:#C8D0DC;position:relative;flex:0 0 auto;transition:.2s;cursor:pointer}
+.sw i{position:absolute;top:2.5px;inset-inline-end:2.5px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.sw.on{background:var(--green)}
+.sw.on i{inset-inline-end:auto;inset-inline-start:2.5px}
+.pr{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px dashed var(--line);font-size:13px}
+.pr:last-child{border-bottom:0}
+.pr b{flex:1;font-weight:600}
+.pr em{font-style:normal;font-weight:700;color:var(--navy)}
+html[data-theme="dark"] .pr em{color:#CFE0FF}
+.grid3 .mi{background:var(--soft);border:1px solid var(--line);border-radius:11px;padding:8px 4px;text-align:center}
+.grid3 .mi span{display:block;font-size:10px;color:var(--mut)}
+.grid3 .mi b{font-size:13.5px}
+.wx{background:linear-gradient(140deg,#5EA8E0,#2C7BC4);border-radius:16px;padding:13px;color:#fff;text-align:center;margin-bottom:11px}
+.wx .big{font-size:40px;font-weight:800;line-height:1.1}
+.wx .sun{font-size:40px}
+.fc{display:flex;gap:8px}
+.fc .d{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 4px;text-align:center;font-size:11.5px}
+.fc .d b{display:block;font-size:15px;margin-top:2px}
+.fc .d i{font-style:normal;font-size:10px;color:var(--mut)}
+.ok-circle{width:74px;height:74px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:38px;margin:8px auto 12px}
+.cb{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--line);font-size:13.5px;cursor:pointer}
+.cb:last-child{border-bottom:0}
+.cb .bx{width:22px;height:22px;border-radius:6px;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex:0 0 auto}
+.cb.on .bx{background:var(--blue);border-color:var(--blue)}
+.cb b{flex:1;font-weight:600}
+.tst{position:fixed;left:50%;top:16px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 15px;border-radius:11px;font-size:13px;z-index:99;box-shadow:0 8px 24px rgba(0,0,0,.3);max-width:92%;text-align:center}
+.ov{position:fixed;inset:0;background:rgba(10,18,32,.62);display:flex;align-items:flex-end;justify-content:center;z-index:60;padding:0}
+.ov .sh{background:var(--card);width:100%;max-width:430px;border-radius:18px 18px 0 0;padding:16px 15px calc(16px + env(safe-area-inset-bottom));max-height:92%;overflow:auto}
+.ov .sh h3{margin:0 0 12px;font-size:16px;color:var(--navy);text-align:center}
+html[data-theme="dark"] .ov .sh h3{color:#CFE0FF}
+.lgi{background:linear-gradient(170deg,#1B3B6F 0%,#2E5B96 42%,#F3E3C3 43%,#F7EFE0 100%);min-height:100%;display:flex;flex-direction:column;padding:0 0 20px}
+.lgi .hel{text-align:center;padding:46px 0 12px}
+.lgi .hel svg{width:78px;height:60px}
+.lgi .t1{text-align:center;color:#fff;font-size:25px;font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.25)}
+.lgi .t2{text-align:center;color:rgba(255,255,255,.9);font-size:12.5px;margin-top:3px}
+.lgi .wr{background:var(--card);border-radius:16px;margin:18px 15px 0;padding:18px 14px;text-align:center;box-shadow:0 8px 24px rgba(20,40,80,.15)}
+.lgi .wr span{font-size:12.5px;color:var(--mut)}
+.lgi .wr b{display:block;font-size:20px;margin-top:3px}
+.lgi .btns{padding:16px 15px 0;display:flex;flex-direction:column;gap:10px}
+.lgi .ft{text-align:center;margin-top:auto;padding-top:22px;font-size:11.5px;color:#7A6A4E;font-weight:600}
+.spl{position:fixed;inset:0;max-width:430px;margin:0 auto;background:linear-gradient(165deg,#144272,#1B3B6F 55%,#2E5B96);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:80;text-align:center;padding:24px}
+.spl svg{width:96px;height:74px}
+.spl b{font-size:27px;font-weight:800}
+.spl i{font-style:normal;font-size:12.5px;opacity:.9}
+.spl .bar2{width:150px;height:4px;border-radius:3px;background:rgba(255,255,255,.25);overflow:hidden;margin-top:8px}
+.spl .bar2 i{display:block;height:100%;width:0;background:#F5B53B;animation:ld 2.4s linear forwards}
+@keyframes ld{to{width:100%}}
+.hide{display:none!important}
+@media print{.nav,.top,.btn{display:none!important}}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ===== 13. شاشة البداية / تسجيل الدخول ===== -->
+  <div class="scr on" id="sc-login">
+    <div class="lgi">
+      <div class="hel">
+        <svg viewBox="0 0 100 76" fill="none"><path d="M8 62h84" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".55"/><path d="M50 8C31 8 17 19 15 34h70C83 19 69 8 50 8z" fill="#fff"/><path d="M12 34h76a4 4 0 010 8H12a4 4 0 010-8z" fill="#F3E3C3"/><rect x="40" y="42" width="20" height="14" rx="5" fill="#F3E3C3"/></svg>
+      </div>
+      <div class="t1">سجل العمل</div>
+      <div class="t2">نظم عملك بسهولة</div>
+      <div class="wr"><span>مرحباً بك</span><b id="lgName">محمد</b></div>
+      <div class="btns">
+        <button class="btn b" id="lgIn">تسجيل الدخول ←</button>
+        <button class="btn o" id="lgNew">إنشاء حساب جديد</button>
+      </div>
+      <div class="ft">معاً نحو مستقبل أفضل</div>
+    </div>
+  </div>
+
+  <!-- ===== 1. الواجهة الرئيسية ===== -->
+  <div class="scr" id="sc-main">
+    <div class="top"><div class="ttl"><b>سجل العمل</b><i>تنظيم عملك .. لراحة بالك</i></div>
+      <div class="ttl" style="align-items:flex-start"><b style="font-size:18px">👷</b></div></div>
+    <div class="body">
+      <div class="hero"><div class="av">👤</div><div class="hx"><span>أهلاً بك</span><b id="hmName">محمد</b></div></div>
+      <div class="mbar"><div class="ar" id="hmPrev">›</div><select id="hmSel"></select><div class="ar" id="hmNext">‹</div></div>
+      <div class="grid2" style="margin-bottom:9px">
+        <div class="st g"><b id="hmWork">0</b><span>يوم عمل</span></div>
+        <div class="st a"><b id="hmOff">0</b><span>أيام عطلة</span></div>
+      </div>
+      <div class="grid2" style="margin-bottom:11px">
+        <div class="st i"><b><span id="hmEarn">0</span> <small style="font-size:12px">دج</small></b><span>المستحق هذا الشهر</span></div>
+        <div class="st s"><b><span id="hmRec">0</span> <small style="font-size:12px">دج</small></b><span>المقبوض</span></div>
+      </div>
+      <button class="btn b" id="hmGo">إبدأ ←</button>
+      <div class="sect">عرض سريع</div>
+      <div class="li" id="hmSt"><div class="ii">📊</div><div class="tx"><b>الإحصائيات والتقارير</b><span>رسم بياني وتوزيع أماكن العمل</span></div><div class="ch">‹</div></div>
+      <div class="li" id="hmStm"><div class="ii">🧾</div><div class="tx"><b>كشف الحساب</b><span>صفحة جاهزة للطباعة أو الإرسال للشركة</span></div><div class="ch">‹</div></div>
+    </div>
+  </div>
+
+  <!-- ===== 2. جدول العمل الشهري ===== -->
+  <div class="scr" id="sc-table">
+    <div class="top"><div class="ic" id="tbStmt">🧾</div><div class="ti"><span>📅</span> جدول العمل</div><div class="ic" id="tbToday">＋</div></div>
+    <div class="body">
+      <div class="mbar"><div class="ar" id="tmPrev">›</div><select id="tmSel"></select><div class="ar" id="tmNext">‹</div></div>
+      <div class="chips"><div class="chip g">✅ عمل <span id="tmW">0</span></div><div class="chip a">🏖️ عطلة <span id="tmO">0</span></div></div>
+      <div class="money"><div><span>المستحق</span><b id="tmEarn">0</b> دج</div><div><span>المقبوض</span><b id="tmRec">0</b> دج</div></div>
+      <div class="tw"><table id="tbTbl"><thead><tr><th style="width:15%">اليوم</th><th style="width:13%">العمل</th><th style="width:26%">المكان</th><th style="width:15%">أفونس</th><th style="width:15%">ديبلاسمو</th><th style="width:16%">مدفوعات</th></tr></thead><tbody id="tbBody"></tbody></table></div>
+      <div class="hint">اضغط أي صف لتعديله · ＋ لإضافة يوم جديد · اضغط رقم الشهر للتنقّل.</div>
+    </div>
+  </div>
+
+  <!-- ===== 3. إضافة / تعديل يوم ===== -->
+  <div class="scr" id="sc-form">
+    <div class="top"><div class="ic" id="fmDel">🗑️</div><div class="ti">إضافة / تعديل يوم عمل</div><div class="ic" id="fmBack">‹</div></div>
+    <div class="body">
+      <div class="fl"><label>التاريخ</label><input class="inp" type="date" id="fmDate"></div>
+      <div class="fl"><label>العمل</label><div class="seg" id="fmSeg"><button data-v="نعم">نعم</button><button data-v="لا">لا</button><button data-v="">—</button></div></div>
+      <div class="fl"><label>المكان</label><input class="inp" id="fmPlace" list="plList" placeholder="اكتب اسم الولاية أو الموقع"><datalist id="plList"></datalist></div>
+      <button class="btn b" id="fmGps" style="margin-bottom:11px">📍 تحديد الموقع عبر GPS</button>
+      <div class="fl"><label>أفونس (دج)</label><input class="inp" type="number" id="fmAv" inputmode="numeric" placeholder="0"></div>
+      <div class="fl"><label>ديبلاسمو (دج)</label><input class="inp" type="number" id="fmDp" inputmode="numeric" placeholder="0">
+        <div class="note">إذا كتبت شيئاً هنا وأنت في عطلة، يُحتسب بـ <b id="fmDpRate">50</b> دج.</div></div>
+      <div class="fl"><label>مدفوعات (دج)</label><input class="inp" type="number" id="fmPy" inputmode="numeric" placeholder="0"></div>
+      <div class="money" style="margin-top:4px"><div><span>مستحق هذا اليوم</span><b id="fmRate">0</b> دج</div><div><span>المكان</span><b id="fmKind">—</b></div></div>
+      <div class="grid2"><button class="btn o" id="fmCancel">إلغاء</button><button class="btn b" id="fmSave">حفظ</button></div>
+    </div>
+  </div>
+
+  <!-- ===== 4. أدوات التطبيق ===== -->
+  <div class="scr" id="sc-tools">
+    <div class="top"><div class="ic" id="tlBack">‹</div><div class="ti">أدوات التطبيق</div><div class="ic">⚙️</div></div>
+    <div class="body">
+      <div class="li" id="tlCopy"><div class="ii">📋</div><div class="tx"><b>نسخ الجدول</b><span>لإرساله أو لصقه في إكسل</span></div><div class="ch">‹</div></div>
+      <div class="li" id="tlYear"><div class="ii">➕</div><div class="tx"><b>إضافة سنة جديدة</b><span>إضافة سنة تقويمية جديدة</span></div><div class="ch">‹</div></div>
+      <div class="li" id="tlMove"><div class="ii">🔀</div><div class="tx"><b>نقل الجدول لشهر آخر</b><span>نقل البيانات إلى شهر آخر</span></div><div class="ch">‹</div></div>
+      <div class="li" id="tlBak"><div class="ii">☁️</div><div class="tx"><b>حفظ احتياطي</b><span>تصدير واستعادة البيانات</span></div><div class="ch">‹</div></div>
+      <div class="li" id="tlCsv"><div class="ii">📤</div><div class="tx"><b>تصدير البيانات</b><span>ملف CSV لبرنامج Excel</span></div><div class="ch">‹</div></div>
+      <div class="li" id="tlStmt"><div class="ii">🧾</div><div class="tx"><b>كشف الحساب</b><span>صفحة جاهزة للطباعة أو الإرسال</span></div><div class="ch">‹</div></div>
+      <div class="li" id="tlStats"><div class="ii">📊</div><div class="tx"><b>الإحصائيات</b><span>أرقام الشهر والسنة وتوزيع الأماكن</span></div><div class="ch">‹</div></div>
+      <div class="li dngr" id="tlClear"><div class="ii">🗑️</div><div class="tx"><b>مسح بيانات هذا الشهر</b><span>سيتم حذف جميع البيانات</span></div><div class="ch">‹</div></div>
+      <button class="btn gh" id="tlClose" style="margin-top:6px">إغلاق</button>
+    </div>
+  </div>
+
+  <!-- ===== 5. الموقع والطقس ===== -->
+  <div class="scr" id="sc-weather">
+    <div class="top"><div class="ic" id="wxBack">‹</div><div class="ti"><span>📍</span> الموقع والطقس</div><div class="ic" id="wxU">🔄</div></div>
+    <div class="body">
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:9px"><div class="ii" style="width:36px;height:36px;border-radius:10px;background:rgba(46,184,114,.14);display:flex;align-items:center;justify-content:center;font-size:18px">📍</div>
+        <div><div style="font-size:11.5px;color:var(--mut)">موقعك الحالي</div><b id="wxCity" style="font-size:16px">—</b></div></div>
+        <div style="text-align:center;color:var(--mut);font-size:11.5px;margin:9px 0" id="wxCoord">—</div>
+        <button class="btn b" id="wxUpd">🔄 تحديث الموقع</button>
+        <button class="btn o" id="wxSave" style="margin-top:9px">💾 حفظ هذا المكان</button>
+      </div>
+      <div class="wx"><div style="font-size:11.5px;opacity:.92">الطقس الآن</div><div class="sun" id="wxIcon">☀️</div><div class="big"><span id="wxT">--</span>°</div><div id="wxDesc" style="font-size:12.5px">—</div></div>
+      <div class="grid3" style="margin-bottom:11px">
+        <div class="mi"><span>الضغط</span><b id="wxP">—</b></div>
+        <div class="mi"><span>الرياح</span><b id="wxW">—</b></div>
+        <div class="mi"><span>الرطوبة</span><b id="wxH">—</b></div>
+      </div>
+      <div class="sect">توقّع 3 أيام</div>
+      <div class="fc" id="wxFc"></div>
+    </div>
+  </div>
+
+  <!-- ===== 6. الإعدادات ===== -->
+  <div class="scr" id="sc-settings">
+    <div class="top"><div class="ic" id="stgBack">‹</div><div class="ti">الإعدادات</div><div class="ic" id="stgX">✕</div></div>
+    <div class="body">
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:9px"><div style="font-size:18px">👤</div><b style="flex:1">بياناتي الشخصية</b><span id="stgEdit" style="color:var(--blue);font-size:12px;cursor:pointer">تعديل</span></div>
+        <div class="pr"><b>الاسم</b><em id="stgName">محمد</em></div>
+        <div class="pr"><b>الشهر الحالي</b><em id="stgMon">—</em></div>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:9px"><div style="font-size:18px">💰</div><b style="flex:1">أسعار اليوميات</b></div>
+        <div class="pr"><b>🏜️ الصحراء</b><em><input class="inp" id="stgPs" type="number" style="width:78px;padding:6px;text-align:center;display:inline-block"> دج</em></div>
+        <div class="pr"><b>⛰️ التل</b><em><input class="inp" id="stgPt" type="number" style="width:78px;padding:6px;text-align:center;display:inline-block"> دج</em></div>
+        <div class="pr"><b>🚚 ديبلاسمو</b><em><input class="inp" id="stgPd" type="number" style="width:78px;padding:6px;text-align:center;display:inline-block"> دج</em></div>
+      </div>
+      <div class="card">
+        <div class="pr"><b>🔔 إشعارات</b><span class="sw" id="stgNt"><i></i></span></div>
+        <div class="pr"><b>🌙 الوضع الليلي</b><span class="sw" id="stgTh"><i></i></span></div>
+        <div class="pr" id="stgLang" style="cursor:pointer"><b>🌐 اللغة</b><em id="stgLangV">العربية</em></div>
+        <div class="pr" id="stgAbout" style="cursor:pointer"><b>ℹ️ حول التطبيق</b><em id="stgVer">2.0</em></div>
+      </div>
+      <div class="card">
+        <div class="pr" id="stgBak" style="cursor:pointer"><b>☁️ النسخ الاحتياطي</b><em>‹</em></div>
+        <div class="pr" id="stgWeather" style="cursor:pointer"><b>🌤️ الموقع والطقس</b><em>‹</em></div>
+        <div class="pr" id="stgPlaces" style="cursor:pointer"><b>🗺️ أماكن العمل</b><em>‹</em></div>
+        <div class="pr" id="stgPriv" style="cursor:pointer"><b>🔒 سياسة الخصوصية</b><em>‹</em></div>
+        <div class="pr" id="stgClear" style="cursor:pointer"><b style="color:var(--red)">🗑️ مسح كل البيانات</b><em>‹</em></div>
+      </div>
+      <div style="text-align:center;color:var(--mut);font-size:11px;margin:12px 0 4px" id="stgFoot">سجل العمل — إصدار 2.0</div>
+    </div>
+  </div>
+
+  <!-- ===== 7. النسخ الاحتياطي ===== -->
+  <div class="scr" id="sc-backup">
+    <div class="top"><div class="ic" id="bkBack">‹</div><div class="ti">النسخ الاحتياطي</div><div class="ic">☁️</div></div>
+    <div class="body">
+      <div class="card"><b>تصدير البيانات</b><div class="hint" style="text-align:center">حفظ بياناتك كملف على جهازك</div><button class="btn b" id="bkExp">⬆️ تصدير (JSON)</button></div>
+      <div class="card"><b>استيراد البيانات</b><div class="hint" style="text-align:center">استعادة البيانات من ملف احتياطي</div><button class="btn b" id="bkImp">⬇️ استيراد (JSON)</button><input type="file" id="bkFile" accept=".json,application/json" class="hide"></div>
+      <div class="card"><b>نسخ إلى Google Drive</b><div class="hint" style="text-align:center">احفظ نسخة على حسابك السحابي</div><button class="btn b" id="bkGd">🔺 ربط حساب Google</button></div>
+      <div class="card"><b>معلومات آخر نسخة</b><div class="pr"><b>آخر نسخة</b><em id="bkWhen">—</em></div><div class="pr"><b>الحجم</b><em id="bkSize">—</em></div><div class="pr"><b>نوع الملف</b><em>JSON</em></div><div class="pr"><b>عدد الأشهر</b><em id="bkMonths">—</em></div></div>
+      <button class="btn gh" id="bkClose">إغلاق</button>
+    </div>
+  </div>
+
+  <!-- ===== 8. تصدير إلى Excel ===== -->
+  <div class="scr" id="sc-excel">
+    <div class="top"><div class="ic" id="exBack">‹</div><div class="ti">تصدير إلى Excel</div><div class="ic">📤</div></div>
+    <div class="body">
+      <div class="alert"><div class="ai">ℹ️</div><div>سيتم تصدير بيانات الشهر الحالي بصيغة CSV تُفتح مباشرة في Excel.</div></div>
+      <div class="card" id="exCols">
+        <div class="cb on" data-c="اليوم"><span class="bx">✓</span><b>الأيام</b></div>
+        <div class="cb on" data-c="العمل"><span class="bx">✓</span><b>العمل</b></div>
+        <div class="cb on" data-c="المكان"><span class="bx">✓</span><b>المكان</b></div>
+        <div class="cb on" data-c="أفونس"><span class="bx">✓</span><b>أفونس</b></div>
+        <div class="cb on" data-c="ديبلاسمو"><span class="bx">✓</span><b>ديبلاسمو</b></div>
+        <div class="cb on" data-c="مدفوعات"><span class="bx">✓</span><b>مدفوعات</b></div>
+      </div>
+      <button class="btn g" id="exGo">⬇️ تصدير CSV</button>
+      <button class="btn gh" id="exCancel" style="margin-top:9px">إلغاء</button>
+    </div>
+  </div>
+
+  <!-- ===== 9. أماكن العمل ===== -->
+  <div class="scr" id="sc-places">
+    <div class="top"><div class="ic" id="plBack">‹</div><div class="ti">أماكن العمل</div><div class="ic">🗺️</div></div>
+    <div class="body">
+      <div class="tabs" id="plTabs"><button class="on" data-t="s">🏜️ المناطق الصحراوية</button><button data-t="m">⭐ أماكني المحفوظة</button></div>
+      <div class="card" id="plListBox"></div>
+      <button class="btn n" id="plAdd">＋ إضافة مكان جديد</button>
+    </div>
+  </div>
+
+  <!-- ===== 10. نقل الجدول إلى شهر آخر ===== -->
+  <div class="scr" id="sc-move">
+    <div class="top"><div class="ic" id="mvBack">‹</div><div class="ti">نقل الجدول إلى شهر آخر</div><div class="ic">🔀</div></div>
+    <div class="body">
+      <div class="fl"><label>اختر الشهر الذي تريد نقل بياناته إليه</label></div>
+      <div class="fl"><label>الشهر المستهدف</label><select class="inp" id="mvSel"></select></div>
+      <div class="alert"><div class="ai">⚠️</div><div>سيتم نقل جميع بيانات الشهر الحالي إلى الشهر المحدّد، وستُبدَّل البيانات بينهما إذا كان الشهر الهدف يحتوي على بيانات.</div></div>
+      <div class="grid2"><button class="btn o" id="mvCancel">إلغاء</button><button class="btn b" id="mvGo">نقل</button></div>
+    </div>
+  </div>
+
+  <!-- ===== 11. الإحصائيات ===== -->
+  <div class="scr" id="sc-stats">
+    <div class="top"><div class="ic" id="ssBack">‹</div><div class="ti">الإحصائيات</div><div class="ic">📊</div></div>
+    <div class="body">
+      <div class="tabs" id="ssTabs"><button class="on" data-t="m">هذا الشهر</button><button data-t="y">العام</button></div>
+      <div class="card">
+        <div class="ring">
+          <div style="position:relative"><svg width="118" height="118" viewBox="0 0 118 118">
+            <circle cx="59" cy="59" r="48" fill="none" stroke="var(--soft)" stroke-width="13"/>
+            <circle id="ssRing" cx="59" cy="59" r="48" fill="none" stroke="#17B0A0" stroke-width="13" stroke-linecap="round" stroke-dasharray="0 999" transform="rotate(-90 59 59)"/>
+          </svg><div class="ct"><span>إجمالي المستحق</span><b id="ssRingV">0</b><i>دج</i></div></div>
+          <div class="lg">
+            <div class="r"><span class="dot" style="background:#2EB872"></span>أيام العمل<b id="ssW">0</b></div>
+            <div class="r"><span class="dot" style="background:#F39C12"></span>أيام العطلة<b id="ssO">0</b></div>
+            <div class="r"><span class="dot" style="background:#0D6EFD"></span>أفونس<b id="ssAv">0</b></div>
+            <div class="r"><span class="dot" style="background:#8E44AD"></span>ديبلاسمو<b id="ssDp">0</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="grid2" style="margin-bottom:11px">
+        <div class="st a" style="min-height:70px"><b><span id="ssRem">0</span> <small style="font-size:12px">دج</small></b><span>المتبقي</span></div>
+        <div class="st g" style="min-height:70px"><b><span id="ssRec">0</span> <small style="font-size:12px">دج</small></b><span>المقبوض</span></div>
+      </div>
+      <div class="sect">توزيع أماكن العمل</div>
+      <div class="card" id="ssDist"></div>
+      <button class="btn b" id="ssStmt">🧾 كشف الحساب</button>
+    </div>
+  </div>
+
+  <!-- ===== 12. معلومات النسخة الاحتياطية ===== -->
+  <div class="scr" id="sc-binfo">
+    <div class="top"><div class="ic" id="biBack">‹</div><div class="ti">معلومات النسخة الاحتياطية</div><div class="ic">✅</div></div>
+    <div class="body">
+      <div class="card" style="text-align:center">
+        <div class="ok-circle">✓</div>
+        <b style="font-size:15px">تم حفظ نسخة احتياطية بنجاح</b>
+      </div>
+      <div class="card">
+        <div class="pr"><b>آخر نسخة</b><em id="biWhen">—</em></div>
+        <div class="pr"><b>الحجم</b><em id="biSize">—</em></div>
+        <div class="pr"><b>نوع الملف</b><em>JSON</em></div>
+        <div class="pr"><b>عدد الأشهر</b><em id="biMonths">—</em></div>
+      </div>
+      <button class="btn o" id="biGd">🔺 حفظ على Google Drive</button>
+      <button class="btn gh" id="biClose" style="margin-top:9px">إغلاق</button>
+    </div>
+  </div>
+
+  <!-- شريط التنقل -->
+  <nav class="nav" id="nav">
+    <button data-go="main" class="on"><i>🏠</i>الرئيسية</button>
+    <button data-go="table"><i>📊</i>الجدول</button>
+    <button data-go="tools"><i>🧰</i>الأدوات</button>
+  </nav>
+</div>
+
+<!-- شاشة البداية -->
+<div class="spl" id="spl">
+  <svg viewBox="0 0 100 76" fill="none"><path d="M50 8C31 8 17 19 15 34h70C83 19 69 8 50 8z" fill="#fff"/><path d="M12 34h76a4 4 0 010 8H12a4 4 0 010-8z" fill="#F3E3C3"/><rect x="40" y="42" width="20" height="14" rx="5" fill="#F3E3C3"/><path d="M8 66h84" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".5"/></svg>
+  <b>سجل العمل</b><i>تنظيم عملك .. لراحة بالك</i>
+  <div class="bar2"><i></i></div>
+</div>
+
+<div class="ov hide" id="ov"><div class="sh" id="ovSh"></div></div>
+<div id="tstWrap"></div>
+<script>
+(function(){
+"use strict";
+var Q=function(i){return document.getElementById(i)};
+var K="worklog-public-v1",NK="worklog-public-name",SK="worklog-siji-v1";
+var NM=["جانفي","فيفري","مارس","أفريل","ماي","جوان","جويلية","أوت","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+var DY=["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+var SAHARA_PLACES=["حاسي مسعود","حاسي الرمل","أدرار","ورقلة","تمنراست","إليزي","تندوف","عين صالح","عين قزام","برج باجي مختار","تيميمون","جانت","بني عباس"];
+var PL=[["برج بوعريريج",36.07,4.76],["عين البيضة",35.8,7.39],["حاسي مسعود",31.68,6.07],["حاسي الرمل",32.93,3.27],["أدرار",27.87,-0.29],["الشلف",36.17,1.33],["الأغواط",33.8,2.88],["أم البواقي",35.88,7.11],["باتنة",35.56,6.17],["بجاية",36.75,5.06],["بسكرة",34.85,5.73],["بشار",31.62,-2.22],["البليدة",36.47,2.83],["البويرة",36.37,3.9],["تمنراست",22.79,5.52],["تبسة",35.4,8.12],["تلمسان",34.88,-1.32],["تيارت",35.37,1.32],["تيزي وزو",36.71,4.05],["الجزائر",36.75,3.06],["الجلفة",34.67,3.26],["جيجل",36.82,5.77],["سطيف",36.19,5.41],["سعيدة",34.84,0.15],["سكيكدة",36.88,6.91],["سيدي بلعباس",35.19,-0.63],["عنابة",36.9,7.77],["قالمة",36.46,7.43],["قسنطينة",36.37,6.61],["المدية",36.26,2.75],["مستغانم",35.93,0.09],["المسيلة",35.7,4.54],["معسكر",35.4,0.14],["ورقلة",31.95,5.32],["وهران",35.7,-0.63],["البيض",33.68,1.02],["إليزي",26.5,8.48],["بومرداس",36.76,3.48],["الطارف",36.77,8.31],["تندوف",27.67,-8.15],["تيسمسيلت",35.61,1.81],["الوادي",33.37,6.86],["خنشلة",35.43,7.14],["سوق أهراس",36.29,7.95],["تيبازة",36.59,2.45],["ميلة",36.45,6.26],["عين الدفلى",36.26,1.97],["النعامة",33.27,-0.31],["عين تموشنت",35.3,-1.14],["غرداية",32.49,3.67],["غليزان",35.74,0.56],["تيميمون",29.26,0.23],["برج باجي مختار",21.33,0.95],["أولاد جلال",34.43,5.07],["بني عباس",30.13,-2.17],["عين صالح",27.2,2.48],["عين قزام",19.57,5.77],["توقرت",33.1,6.06],["جانت",24.55,9.48],["المغير",33.95,5.92],["المنيعة",30.58,2.88]];
+var D={},ck="",nm="",ei=0,mid="",st="",wit=null;
+var S={theme:"auto",notify:true,lang:"ar",ps:200,pt:150,pd:50,lastBak:"",lastSize:0};
+
+function two(n){return ("0"+n).slice(-2)}
+function today(){var d=new Date();return d.getFullYear()+"-"+two(d.getMonth()+1)+"-"+two(d.getDate())}
+function blank(){return {d:"",w:"",p:"",av:"",dp:"",py:""}}
+function keys(){return Object.keys(D).sort()}
+function empty(r){return !r.d&&!r.w&&!r.p&&r.av===""&&!r.dp&&r.py===""}
+function ensure(y){for(var m=1;m<=12;m++){var k=y+"-"+two(m);if(!D[k])D[k]=blank();while(D[k].length<30)D[k].push(blank())}}
+function num(v){v=parseFloat(v);return isNaN(v)?0:v}
+function money(n){return String(Math.round(num(n))).replace(/\B(?=(\d{3})+(?!\d))/g,",")}
+function esc(s){return String(s===undefined||s===null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function nz(v,d){return (v===undefined||v===null||v==="")?d:v}
+function isSahara(p){p=String(p||"");for(var i=0;i<SAHARA_PLACES.length;i++){if(p.indexOf(SAHARA_PLACES[i])!==-1)return true}return false}
+function rate(r){var t=0;if(r.w==="نعم"&&r.p&&r.p.trim()!==""){t+=isSahara(r.p)?num(S.ps):num(S.pt)}if(r.dp&&String(r.dp).trim()!=="")t+=num(S.pd);return t}
+function sum(rows){var o={w:0,o:0,av:0,dp:0,py:0,earn:0,rec:0,rem:0,tot:0};
+ for(var i=0;i<rows.length;i++){var r=rows[i];if(!r||empty(r))continue;if(r.w==="نعم")o.w++;else if(r.w==="لا")o.o++;
+  o.av+=num(r.av);o.dp+=num(r.dp);o.py+=num(r.py);o.earn+=rate(r)}
+ o.rec=o.av+o.py;o.rem=o.earn-o.rec;o.tot=o.w+o.o;return o}
+function mname(k){return NM[+String(k).slice(5)-1]+" "+String(k).slice(0,4)}
+function save(){try{localStorage.setItem(K,JSON.stringify({d:D,c:ck}))}catch(e){}}
+function loadS(){try{var o=JSON.parse(localStorage.getItem(SK)||"{}");for(var k in S){if(o[k]!==undefined)S[k]=o[k]}}catch(e){}}
+function saveS(){try{localStorage.setItem(SK,JSON.stringify(S))}catch(e){}}
+function myPlaces(){try{return JSON.parse(localStorage.getItem("wl-places")||"{}")||{}}catch(e){return{}}}
+function load(){var t=today();ck=t.slice(0,7);D={};
+ try{var s=JSON.parse(localStorage.getItem(K)||"null");if(s&&s.d){D=s.d;if(s.c)ck=s.c}}catch(e){}
+ try{for(var _k in D){if(!Array.isArray(D[_k]))delete D[_k]}}catch(e){}
+ if(!D||!Object.keys(D).length){D={};}
+ ensure(+ck.slice(0,4));if(!D[ck])ck=t.slice(0,7);
+ try{nm=localStorage.getItem(NK)||""}catch(e){}
+ nm=nm||"محمد";loadS()}
+
+function toast(m){var w=Q("tstWrap");if(!w)return;var d=document.createElement("div");d.className="tst";d.textContent=m;w.appendChild(d);setTimeout(function(){try{d.remove()}catch(e){}},2600)}
+function go(name){var l=document.querySelectorAll(".scr");for(var i=0;i<l.length;i++)l[i].classList.remove("on");var el=Q("sc-"+name);if(el)el.classList.add("on");
+ try{var nv=Q("nav");if(nv)nv.classList.toggle("hide",name==="login")}catch(e){}
+ var b=document.querySelectorAll("#nav button");for(var j=0;j<b.length;j++)b[j].classList.toggle("on",b[j].getAttribute("data-go")===name);
+ if(name==="main")rMain();else if(name==="table")rTable();else if(name==="tools")rTools();else if(name==="weather")rWx();
+ else if(name==="settings")rStg();else if(name==="backup")rBack();else if(name==="stats")rStats();else if(name==="places")rPlaces();else if(name==="move")fillMove();
+ try{window.scrollTo(0,0)}catch(e){}}
+function fillMons(sel){if(!sel)return;var ks=keys();sel.innerHTML=ks.map(function(k){var has=(Array.isArray(D[k])?D[k]:[]).some(function(r){return !empty(r)});return '<option value="'+k+'">'+mname(k)+(has?" ●":"")+"</option>"}).join("");sel.value=ck}
+function shiftMonth(n){var k=+ck.slice(5)-1+n,y=+ck.slice(0,4);if(k<0){k=11;y--}if(k>11){k=0;y++}ck=y+"-"+two(k+1);if(!D[ck])D[ck]=blank();ensure(y);save();go(cur())}
+function cur(){var a=document.querySelector(".scr.on");return a?a.id.replace("sc-",""):"main"}
+function openOv(html){var o=Q("ov");Q("ovSh").innerHTML=html;o.classList.remove("hide");o.onclick=function(e){if(e.target===o)closeOv()}}
+function closeOv(){Q("ov").classList.add("hide")}
+
+/* ===== الرئيسية ===== */
+function rMain(){var s=sum(D[ck]||[]);
+ Q("hmName").textContent=nm;
+ Q("hmWork").textContent=s.w;Q("hmOff").textContent=s.o;
+ Q("hmEarn").textContent=money(s.earn);Q("hmRec").textContent=money(s.rec);
+ fillMons(Q("hmSel"))}
+
+/* ===== الجدول ===== */
+/* ===== الجدول (نسخة محصّنة: ترسم الصفوف أولاً ثم الإضافات) ===== */
+function rTable(){
+ var MN=["جانفي","فيفري","مارس","أفريل","ماي","جوان","جويلية","أوت","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+ function e2(x){return String(x===undefined||x===null?"":x).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+ function n2(v){v=parseFloat(v);return isNaN(v)?0:v}
+ function m2(v){return String(Math.round(n2(v))).replace(/\B(?=(\d{3})+(?!\d))/g,",")}
+ var rows=(typeof D!=="undefined"&&D&&D[ck]&&D[ck].length)?D[ck]:[];
+ var st={w:0,o:0,av:0,py:0,earn:0};
+ for(var i=0;i<30;i++){
+   var r=rows[i]||{};
+   if(r.w==="نعم")st.w++;else if(r.w==="لا")st.o++;
+   st.av+=n2(r.av);st.py+=n2(r.py);
+   try{ if(r.w==="نعم"&&r.p)st.earn+=isSahara(r.p)?S.ps:S.pt; if(String(r.dp||"")!=="")st.earn+=50 }
+   catch(e){ if(r.w==="نعم"&&r.p)st.earn+=/حاسي|أدرار|ورقلة|تمنراست|إليزي|تندوف|عين صالح|عين قزام|بني عباس|تيميمون|جانت|برج باجي مختار|الرمل/.test(r.p)?200:150; if(String(r.dp||"")!=="")st.earn+=50 }
+ }
+ var tb=Q("tbBody"),h="";
+ for(var k=0;k<30;k++){
+   var r2=rows[k]||{},off=(r2.w==="لا"),cls=off?"off":"";
+   var pill=(r2.w==="نعم")?'<span class="pill y">نعم</span>':((r2.w==="لا")?'<span class="pill n">لا</span>':'<span class="pill d">—</span>');
+   var av=n2(r2.av),dp=n2(r2.dp),py=n2(r2.py);
+   h+='<tr class="'+cls+'" data-i="'+k+'"><td>'+(r2.d?e2(String(r2.d).slice(5)):"—")+'</td><td>'+pill+'</td><td style="font-size:10.5px">'+e2(r2.p||"—")+'</td><td>'+(av?m2(av):"—")+'</td><td>'+(dp?m2(dp):"—")+'</td><td>'+(py?m2(py):"—")+'</td></tr>';
+ }
+ if(tb)tb.innerHTML=h;
+ try{Q("tmW").textContent=st.w;Q("tmO").textContent=st.o;Q("tmEarn").textContent=m2(st.earn);Q("tmRec").textContent=m2(st.av+st.py)}catch(e){}
+ try{
+   var sel=Q("tmSel");
+   if(sel){var ks=[];for(var y in D){if(/^[0-9]{4}-[0-9]{2}$/.test(y))ks.push(y)}ks.sort();
+     sel.innerHTML=ks.map(function(kk){var has=false;try{has=(Array.isArray(D[kk])?D[kk]:[]).some(function(q){return q&&(q.d||q.w||q.p||String(q.av||"")!==""||String(q.dp||"")!==""||String(q.py||"")!=="")})}catch(e){}
+       var pp=kk.split("-");return '<option value="'+kk+'">'+MN[(+pp[1]||1)-1]+" "+pp[0]+(has?" ●":"")+'</option>'}).join("");
+     sel.value=ck}
+ }catch(e){}
+ try{ if(Q("plList")){var dl="";try{PL.forEach(function(p){dl+='<option value="'+e2(p[0])+'">'})}catch(e){}
+   try{var mp=myPlaces();for(var kk2 in mp){dl+='<option value="'+e2(kk2)+'">'}}catch(e){}
+   Q("plList").innerHTML=dl} }catch(e){}
+}
+function openForm(i){ei=i;go("form");rForm()}
+function rForm(){var rows=D[ck]||[],r=rows[ei]||blank();
+ Q("fmDate").value=r.d||(ck+"-"+two(ei+1));
+ Q("fmPlace").value=r.p||"";Q("fmAv").value=r.av===""?"":r.av;Q("fmDp").value=r.dp===""?"":r.dp;Q("fmPy").value=r.py===""?"":r.py;
+ var b=Q("fmSeg").children;for(var i=0;i<b.length;i++)b[i].classList.toggle("on",b[i].getAttribute("data-v")===(r.w||""));
+ Q("fmDpRate").textContent=money(S.pd);liveRate()}
+function liveRate(){var r={w:segv(),p:Q("fmPlace").value,dp:Q("fmDp").value};
+ Q("fmRate").textContent=money(rate(r));
+ Q("fmKind").textContent=(r.w==="نعم"&&r.p)?(isSahara(r.p)?"صحراء "+money(S.ps):"تل "+money(S.pt)):"—"}
+function segv(){var b=Q("fmSeg").children;for(var i=0;i<b.length;i++)if(b[i].classList.contains("on"))return b[i].getAttribute("data-v");return""}
+function saveDay(){var rows=D[ck]||[];while(rows.length<30)rows.push(blank());
+ var r=rows[ei]||blank();
+ r.d=Q("fmDate").value||"";r.w=segv();r.p=Q("fmPlace").value||"";
+ r.av=Q("fmAv").value===""?"":num(Q("fmAv").value);r.dp=Q("fmDp").value===""?"":num(Q("fmDp").value);r.py=Q("fmPy").value===""?"":num(Q("fmPy").value);
+ rows[ei]=r;D[ck]=rows;save();toast("✅ تم حفظ اليوم");go("table")}
+function delDay(){var rows=D[ck]||[];rows[ei]=blank();D[ck]=rows;save();toast("🗑️ تم مسح اليوم");go("table")}
+
+/* ===== الأدوات ===== */
+function rTools(){}
+function copyTable(){var rows=D[ck]||[];var t="اليوم\tالعمل\tالمكان\tأفونس\tديبلاسمو\tمدفوعات\n";
+ rows.forEach(function(r){if(empty(r))return;t+=(r.d||"")+"\t"+(r.w||"")+"\t"+(r.p||"")+"\t"+num(r.av)+"\t"+num(r.dp)+"\t"+num(r.py)+"\n"});
+ cp(t).then(function(){toast("📋 تم نسخ الجدول (الصقه في إكسل)")})}
+function cp(t){try{if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(t)}catch(e){}
+ return new Promise(function(res){try{var a=document.createElement("textarea");a.value=t;a.style.position="fixed";a.style.opacity="0";document.body.appendChild(a);a.select();document.execCommand("copy");a.remove()}catch(e){}res()})}
+function addYear(){var ks=keys(),y=ks.length?+ks[ks.length-1].slice(0,4):+today().slice(0,4);y++;ensure(y);save();toast("➕ أُضيفت سنة "+y+" (12 شهراً)");fillMons(Q("tmSel"))}
+function fillMove(){var sel=Q("mvSel");if(!sel)return;var ks=keys();sel.innerHTML=ks.filter(function(k){return k!==ck}).map(function(k){return '<option value="'+k+'">'+mname(k)+"</option>"}).join("")}
+function doMove(){var t=Q("mvSel").value;if(!t)return;var a=D[ck]||[],b=D[t]||blank();
+ var aHas=a.some(function(r){return !empty(r)}),bHas=b.some(function(r){return !empty(r)});
+ if(bHas&&!confirm("الشهر الهدف يحتوي على بيانات — سيتم التبديل بين الشهرين. المتابعة؟"))return;
+ D[ck]=b;D[t]=a;save();var o=ck;ck=t;save();toast("🔀 تم النقل بين "+mname(o)+" و "+mname(t));go("table")}
+function clearMonth(){if(!confirm("سيتم حذف جميع بيانات شهر "+mname(ck)+". متابعة؟"))return;
+ D[ck]=blank();save();toast("🗑️ مُسحت بيانات الشهر");go("table")}
+
+/* ===== الموقع والطقس ===== */
+function nearest(la,lo){var b=null,d0=1e9;var mp=myPlaces();
+ var all=PL.map(function(p){return [p[0],p[1],p[2]]});
+ for(var k in mp){var m=mp[k];if(m&&m.lat!==undefined)all.push([k,m.lat,m.lng])}
+ all.forEach(function(p){var d=dist(la,lo,p[1],p[2]);if(d<d0){d0=d;b=p[0]}});return {n:b,d:d0}}
+function dist(la1,lo1,la2,lo2){var R=6371,p=Math.PI/180;
+ var a=Math.sin((la2-la1)*p/2),b=Math.sin((lo2-lo1)*p/2);
+ return 2*R*Math.asin(Math.sqrt(a*a+Math.cos(la1*p)*Math.cos(la2*p)*b*b))}
+function gps(cb){if(!navigator.geolocation){toast("⚠️ الجهاز لا يدعم تحديد الموقع");return}
+ navigator.geolocation.getCurrentPosition(function(p){cb(p.coords.latitude,p.coords.longitude)},
+ function(e){toast(e&&e.code===1?"⚠️ إذن الموقع مرفوض — اسمح بالوصول ثم أعد المحاولة":"⚠️ تعذّر تحديد الموقع")},
+ {enableHighAccuracy:true,timeout:15000,maximumAge:60000})}
+function rWx(){if(wit){paintWx(wit);return}Q("wxCity").textContent="—"}
+function paintWx(o){Q("wxCity").textContent=o.city||"—";Q("wxCoord").textContent=o.lat.toFixed(2)+"° N, "+o.lon.toFixed(2)+"° E";
+ Q("wxT").textContent=o.t;Q("wxP").textContent=o.p+" hPa";Q("wxW").textContent=o.w+" كم/سا";Q("wxH").textContent=o.h+"%";
+ Q("wxDesc").textContent=o.desc;Q("wxIcon").textContent=o.icon;
+ var f="";(o.fc||[]).forEach(function(d){f+='<div class="d">'+esc(d.n)+'<div style="font-size:19px">☀️</div><b>'+d.mx+'°</b><i>'+d.mn+'°</i></div>'});
+ Q("wxFc").innerHTML=f||'<div class="d">—</div>';wit=o;
+ if(o.saved){var mp=myPlaces();mp[o.city]={lat:o.lat,lng:o.lon};try{localStorage.setItem("wl-places",JSON.stringify(mp))}catch(e){}toast("💾 حُفظ المكان: "+o.city)}}
+function updWx(saved){gps(function(la,lo){var nn=nearest(la,lo);
+ var u="https://api.open-meteo.com/v1/forecast?latitude="+la.toFixed(3)+"&longitude="+lo.toFixed(3)+"&current_weather=true&daily=temperature_2m_max,temperature_2m_min&hourly=relativehumidity_2m&forecast_days=3&timezone=auto";
+ fetch(u).then(function(r){return r.json()}).then(function(j){var c=j.current_weather||{},d=j.daily||{};
+   var days=[];(d.time||[]).forEach(function(t,i){var dt=new Date(t+"T00:00:00");
+     days.push({n:DY[dt.getDay()],mx:Math.round(d.temperature_2m_max[i]),mn:Math.round(d.temperature_2m_min[i])})});
+   paintWx({city:nn.n,lat:la,lon:lo,t:Math.round(c.temperature),w:Math.round(c.windspeed),p:Math.round(c.pressure||0),h:(j.hourly&&j.hourly.relativehumidity_2m)?j.hourly.relativehumidity_2m[0]:0,
+     desc:(c.weathercode>=0&&c.weathercode<=3)?"مشمس":(c.weathercode<=48?"غائم":"متغيّر"),icon:(c.weathercode<=3)?"☀️":"⛅",fc:days,saved:saved})})
+  .catch(function(){toast("⚠️ تعذّر جلب الطقس (تحقّق من الإنترنت)")})})}
+
+/* ===== الإعدادات ===== */
+function rStg(){Q("stgName").textContent=nm;Q("stgMon").textContent=mname(ck);
+ Q("stgPs").value=S.ps;Q("stgPt").value=S.pt;Q("stgPd").value=S.pd;
+ Q("stgNt").classList.toggle("on",!!S.notify);
+ Q("stgTh").classList.toggle("on",document.documentElement.getAttribute("data-theme")==="dark");
+ Q("stgLangV").textContent="العربية";Q("stgVer").textContent="2.0"}
+function applyTheme(){var t=S.theme;if(t==="dark")document.documentElement.setAttribute("data-theme","dark");
+ else if(t==="light")document.documentElement.setAttribute("data-theme","light");
+ else document.documentElement.removeAttribute("data-theme")}
+function editName(){openOv('<h3>تعديل اسم الحساب</h3><input class="inp" id="ovName" maxlength="30" value="'+esc(nm)+'"><div class="grid2" style="margin-top:12px"><button class="btn gh" onclick="SIJ.close()">إلغاء</button><button class="btn b" id="ovNameS">حفظ</button></div>');
+ setTimeout(function(){var b=Q("ovNameS");if(b)b.onclick=function(){var v=(Q("ovName").value||"").trim();if(!v){toast("⚠️ اكتب اسماً");return}
+   nm=v.slice(0,30);try{localStorage.setItem(NK,nm)}catch(e){}closeOv();Q("hmName").textContent=nm;Q("lgName").textContent=nm;rStg();toast("✅ تم تحديث الاسم")}},60)}
+
+/* ===== النسخ الاحتياطي ===== */
+function bakInfo(size){S.lastBak=new Date().toISOString();S.lastSize=size||0;saveS();
+ var w=mname(ck);Q("bkWhen")&&(Q("bkWhen").textContent=new Date().toLocaleString("ar-DZ"));
+ Q("bkSize")&&(Q("bkSize").textContent=(size/1024).toFixed(1)+" KB");
+ Q("bkMonths")&&(Q("bkMonths").textContent=keys().length+" شهراً")}
+function rBack(){if(S.lastBak){Q("bkWhen").textContent=new Date(S.lastBak).toLocaleString("ar-DZ");Q("bkSize").textContent=(num(S.lastSize)/1024).toFixed(1)+" KB";Q("bkMonths").textContent=keys().length+" شهراً"}}
+function doExport(){var data=JSON.stringify({app:"سجل العمل",ver:"2.0",name:nm,t:new Date().toISOString(),d:D,c:ck},null,1);
+ var b=new Blob([data],{type:"application/json"});var u=URL.createObjectURL(b);
+ var a=document.createElement("a");a.href=u;a.download="نسخة-سجل-العمل-"+today()+".json";document.body.appendChild(a);a.click();a.remove();
+ setTimeout(function(){URL.revokeObjectURL(u)},1500);
+ bakInfo(data.length);showBinfo()}
+function showBinfo(){go("binfo");Q("biWhen").textContent=new Date().toLocaleString("ar-DZ");Q("biSize").textContent=(num(S.lastSize)/1024).toFixed(1)+" KB";Q("biMonths").textContent=keys().length+" شهراً"}
+function doImport(f){var rd=new FileReader();rd.onload=function(){try{
+  var o=JSON.parse(String(rd.result));
+  var d=(o&&o.d)?o.d:null;
+  if(!d)throw 0;
+  var clean={};
+  Object.keys(d).forEach(function(k){if(!/^\d{4}-\d{2}$/.test(k))return;
+   var rows=Array.isArray(d[k])?d[k]:[];
+   clean[k]=[];for(var i=0;i<30;i++){var r=rows[i]||{};clean[k].push({d:String(r.d||""),w:(r.w==="نعم"||r.w==="لا")?r.w:"",p:String(r.p||""),av:r.av===""||r.av===undefined?"":num(r.av),dp:r.dp===""||r.dp===undefined?"":num(r.dp),py:r.py===""||r.py===undefined?"":num(r.py)})}});
+  if(!Object.keys(clean).length)throw 0;
+  D=clean;if(!D[ck])ck=Object.keys(D).sort()[0];
+  if(o.name)nm=String(o.name).slice(0,30);try{localStorage.setItem(NK,nm)}catch(e){}
+  save();toast("✅ تم استعادة البيانات ("+keys().length+" شهراً)");go("table")
+ }catch(e){toast("⚠️ الملف غير صالح — تأكّد أنه ملف نسخة احتياطية")}};
+ rd.readAsText(f)}
+
+/* ===== CSV ===== */
+function exCols(){var cbs=document.querySelectorAll("#exCols .cb"),o=[];for(var i=0;i<cbs.length;i++)if(cbs[i].classList.contains("on"))o.push(cbs[i].getAttribute("data-c"));return o}
+function doCsv(){var cols=exCols(),rows=D[ck]||[];
+ var head=["الشهر"].concat(cols),out=[head.join(",")];
+ rows.forEach(function(r){if(empty(r))return;var line=[mname(ck)];
+  cols.forEach(function(c){var v="";
+   if(c==="اليوم")v=r.d||"";else if(c==="العمل")v=r.w||"";else if(c==="المكان")v=r.p||"";
+   else if(c==="أفونس")v=num(r.av);else if(c==="ديبلاسمو")v=num(r.dp);else if(c==="مدفوعات")v=num(r.py);
+   line.push('"'+String(v).replace(/"/g,'""')+'"')});
+  out.push(line.join(","))});
+ var s=sum(rows);out.push("");out.push(["الإجمالي","","","","","",""].slice(0,cols.length+1).join(","));
+ out.push('"أيام العمل",'+s.w);out.push('"أيام العطلة",'+s.o);out.push('"المستحق",'+s.earn);out.push('"المقبوض",'+s.rec);out.push('"المتبقي",'+s.rem);
+ var blob=new Blob(["\ufeff"+out.join("\n")],{type:"text/csv;charset=utf-8"});
+ var u=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=u;a.download="سجل-العمل-"+ck+".csv";document.body.appendChild(a);a.click();a.remove();
+ setTimeout(function(){URL.revokeObjectURL(u)},1500);toast("⬇️ نُزّل ملف CSV ("+cols.length+" أعمدة)");go("table")}
+
+/* ===== الأماكن ===== */
+function rPlaces(){var t=Q("plTabs").querySelector("button.on"),mode=t?t.getAttribute("data-t"):"s";
+ var h="";var mp=myPlaces();
+ if(mode==="s"){SAHARA_PLACES.forEach(function(p){h+='<div class="pr"><b>📍 '+esc(p)+"</b><em>"+money(S.ps)+" دج</em></div>"})}
+ else{var ks=Object.keys(mp);h=ks.length?ks.map(function(p){return '<div class="pr"><b>⭐ '+esc(p)+"</b><em>"+money(isSahara(p)?S.ps:S.pt)+" دج</em></div>"}).join(""):'<div class="hint" style="text-align:center;padding:10px">لا أماكن محفوظة بعد — اضغط «إضافة مكان جديد» أو احفظ موقعك من شاشة الموقع والطقس.</div>'}
+ Q("plListBox").innerHTML=h}
+function addPlace(){openOv('<h3>إضافة مكان جديد</h3><input class="inp" id="ovPl" placeholder="اسم الولاية أو الموقع"><div class="hint" style="text-align:center">سيظهر في قائمة المكان عند إضافة يوم.</div><div class="grid2" style="margin-top:12px"><button class="btn gh" onclick="SIJ.close()">إلغاء</button><button class="btn b" id="ovPlS">حفظ</button></div>');
+ setTimeout(function(){var b=Q("ovPlS");if(b)b.onclick=function(){var v=(Q("ovPl").value||"").trim();if(!v){toast("⚠️ اكتب اسماً");return}
+   var mp=myPlaces();mp[v]=mp[v]||{saved:true};try{localStorage.setItem("wl-places",JSON.stringify(mp))}catch(e){}
+   closeOv();rPlaces();rTable();toast("✅ أُضيف: "+v)}},60)}
+
+/* ===== الإحصائيات ===== */
+function rStats(){var mode=Q("ssTabs").querySelector("button.on").getAttribute("data-t");
+ var rows=[];if(mode==="m")rows=D[ck]||[];else keys().forEach(function(k){rows=rows.concat(D[k]||[])});
+ var s=sum(rows);Q("ssRingV").textContent=money(s.earn);Q("ssW").textContent=s.w;Q("ssO").textContent=s.o;
+ Q("ssAv").textContent=money(s.av);Q("ssDp").textContent=money(s.dp);
+ Q("ssRem").textContent=money(s.rem);Q("ssRec").textContent=money(s.rec);
+ var ratio=s.tot?Math.round(s.w/s.tot*100):0;
+ var C=2*Math.PI*48;Q("ssRing").setAttribute("stroke-dasharray",(C*ratio/100).toFixed(1)+" "+C.toFixed(1));
+ var by={};rows.forEach(function(r){if(r.w!=="نعم"||!r.p)return;by[r.p]=(by[r.p]||0)+1});
+ var tot=0;for(var k in by)tot+=by[k];
+ var ks=Object.keys(by).sort(function(a,b){return by[b]-by[a]}).slice(0,6);
+ var CC=["#0D6EFD","#5EA8E0","#17B0A0","#F39C12","#8E44AD","#2EB872"];
+ Q("ssDist").innerHTML=ks.length?ks.map(function(k,i){var pc=Math.round(by[k]/tot*100);
+  return '<div class="bar"><div class="top2"><span>'+esc(k)+'</span><b>'+pc+'%</b></div><div class="tr"><i style="width:'+pc+'%;background:'+CC[i%6]+'"></i></div></div>'}).join(""):'<div class="hint" style="text-align:center">لا أيام عمل مسجّلة في هذه الفترة.</div>'}
+
+/* ===== كشف الحساب (لقطة كاملة) ===== */
+function stmt(){closeOv();var s=sum(D[ck]||[]),rows=D[ck]||[];
+ var o=document.createElement("div");
+ o.id="stOv";
+ o.style.cssText="position:fixed;inset:0;z-index:70;background:var(--bg);display:flex;flex-direction:column;overflow:hidden;max-width:430px;margin:0 auto;direction:rtl";
+ var bd='<div style="text-align:center"><div style="font-size:15px;font-weight:800;color:var(--navy)">🧾 كشف حساب</div>'+
+   '<div style="font-size:11.5px;color:var(--mut)">'+esc(nm)+" — "+mname(ck)+'</div></div>';
+ var md=[["عمل",s.w,"#2EB872"],["عطلة",s.o,"#F39C12"],["أفونس",money(s.av)+" دج","#8E44AD"],["ديبلاسمو",money(s.dp)+" دج","#17B0A0"],["المستحق",money(s.earn)+" دج","#0D6EFD"],["المقبوض",money(s.rec)+" دج","#20639B"],["المجموع المقبوض",money(s.rec)+" دج","#0f8a76"],["المتبقي",money(s.rem)+" دج","#E74C3C"]];
+ var g='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:9px 0">'+md.map(function(m){
+   return '<div style="border:1px solid var(--line);border-radius:10px;padding:7px 3px;text-align:center"><b style="display:block;font-size:13.5px;color:'+m[2]+'">'+m[1]+'</b><span style="font-size:10px;color:var(--mut)">'+m[0]+"</span></div>"}).join("")+"</div>";
+ var tr=rows.map(function(r,i){if(empty(r))return"";
+   var pill=r.w==="نعم"?'<span style="color:#1E824C;font-weight:700">نعم</span>':(r.w==="لا"?'<span style="color:#C0392B;font-weight:700">لا</span>':"—");
+   return "<tr><td>"+esc(r.d||"—")+"</td><td>"+pill+'</td><td style="font-size:9.5px">'+esc(r.p||"—")+"</td><td>"+(num(r.av)?money(r.av):"—")+"</td><td>"+(num(r.dp)?money(r.dp):"—")+"</td><td>"+(num(r.py)?money(r.py):"—")+"</td></tr>"}).join("");
+ var tbl='<div style="background:var(--card);border:1px solid var(--line);border-radius:11px;overflow:hidden"><table style="font-size:10.5px"><thead><tr><th>اليوم</th><th>العمل</th><th>المكان</th><th>أفونس</th><th>ديبلاسمو</th><th>مدفوعات</th></tr></thead><tbody>'+tr+"</tbody></table></div>";
+ var bar='<div style="display:flex;gap:7px;padding:9px 11px calc(9px + env(safe-area-inset-bottom));background:var(--card);border-top:1px solid var(--line)">'+
+  '<button class="btn b" id="stImg" style="padding:10px;font-size:12.5px">🖼️ كصورة</button>'+
+  '<button class="btn n" id="stPr" style="padding:10px;font-size:12.5px">🖨️ طباعة</button>'+
+  '<button class="btn g" id="stWa" style="padding:10px;font-size:12.5px">📤 إرسال</button>'+
+  '<button class="btn gh" id="stC" style="padding:10px;font-size:12.5px">📋 نسخ</button>'+
+  '<button class="btn gh" id="stX" style="padding:10px;font-size:12.5px;max-width:56px">✕</button></div>';
+ o.innerHTML='<div style="padding:calc(11px + env(safe-area-inset-top)) 11px 0">'+bd+g+"</div>"+
+   '<div style="flex:1;overflow:auto;padding:0 11px 9px">'+tbl+'<div style="text-align:center;font-size:10px;color:var(--mut);margin:9px 0">المتبقي = المستحق − (أفونس + مدفوعات)</div></div>'+bar;
+ document.body.appendChild(o);
+ function close(){try{o.remove()}catch(e){}}
+ Q("stX").onclick=close;Q("stPr").onclick=function(){window.print()};
+ Q("stC").onclick=function(){cp(stText()).then(function(){toast("📋 تم نسخ كشف الحساب")})};
+ Q("stWa").onclick=function(){var t=encodeURIComponent(stText());
+  var u=(location.protocol==="file:")?("https://wa.me/?text="+t):("https://wa.me/?text="+t);
+  window.open(u,"_blank");toast("📤 يُفتح واتساب")};
+ Q("stImg").onclick=function(){stPng()}}
+function stText(){var s=sum(D[ck]||[]),rows=D[ck]||[];
+ var t="🧾 *كشف حساب* — "+nm+"\nالشهر: "+mname(ck)+"\n"+"─".repeat(22)+"\n";
+ t+="عمل: "+s.w+" | عطلة: "+s.o+"\nأفونس: "+money(s.av)+" دج | ديبلاسمو: "+money(s.dp)+" دج\nمدفوعات: "+money(s.py)+" دج\nالمستحق: "+money(s.earn)+" دج\nالمقبوض: "+money(s.rec)+" دج\nالمتبقي: "+money(s.rem)+" دج\n"+"─".repeat(22)+"\n";
+ t+="اليوم | العمل | المكان | أفونس | ديبلاسمو | مدفوعات\n";
+ rows.forEach(function(r){if(empty(r))return;t+=(r.d||"")+" | "+(r.w||"—")+" | "+(r.p||"—")+" | "+num(r.av)+" | "+num(r.dp)+" | "+num(r.py)+"\n"});
+ return t}
+function stPng(){try{
+ var rows=(D[ck]||[]).filter(function(r){return !empty(r)}),s=sum(D[ck]||[]);
+ var W=760,pad=22,headH=104,rowH=30,badgeH=88,tblH=40+rows.length*rowH+8;
+ var H=pad+headH+badgeH+tblH+90;
+ var c=document.createElement("canvas");var dpr=2;c.width=W*dpr;c.height=H*dpr;
+ var x=c.getContext("2d");x.scale(dpr,dpr);
+ x.fillStyle="#F0F2F5";x.fillRect(0,0,W,H);
+ x.fillStyle="#1B3B6F";x.fillRect(0,0,W,74);
+ x.fillStyle="#fff";x.font="bold 22px Tahoma,Arial";x.textAlign="center";
+ x.fillText("سجل حساب",W/2,32);
+ x.font="14px Tahoma,Arial";x.fillText(nm+" — "+mname(ck),W/2,56);
+ var md=[["عمل",s.w],["عطلة",s.o],["أفونس",money(s.av)+" دج"],["ديبلاسمو",money(s.dp)+" دج"],["المستحق",money(s.earn)+" دج"],["المقبوض",money(s.rec)+" دج"],["المجموع المقبوض",money(s.rec)+" دج"],["المتبقي",money(s.rem)+" دج"]];
+ var bw=(W-pad*2-3*8)/4,by=84;
+ x.textAlign="center";
+ md.forEach(function(m,i){var r=Math.floor(i/4),cc=i%4;
+  var bx=W-pad-bw-(cc*(bw+8)),byy=by+r*40;
+  x.fillStyle="#fff";x.strokeStyle="#E3E7ED";x.lineWidth=1;x.beginPath();
+  if(x.roundRect)x.roundRect(bx,byy,bw,34,8);else x.rect(bx,byy,bw,34);
+  x.fill();x.stroke();
+  x.fillStyle="#1B2433";x.font="bold 13px Tahoma,Arial";x.fillText(String(m[1]),bx+bw/2,byy+15);
+  x.fillStyle="#6B7587";x.font="10px Tahoma,Arial";x.fillText(m[0],bx+bw/2,byy+28)});
+ var ty=by+88;
+ x.fillStyle="#1B3B6F";x.fillRect(pad,ty,W-pad*2,34);
+ x.fillStyle="#fff";x.font="bold 12px Tahoma,Arial";
+ var cols=["اليوم","العمل","المكان","أفونس","ديبلاسمو","مدفوعات"],cw=(W-pad*2)/6;
+ cols.forEach(function(t,i){x.fillText(t,W-pad-cw/2-(i*cw),ty+22)});
+ rows.forEach(function(r,i){var yy=ty+34+i*rowH;
+  x.fillStyle=(i%2)?"#F7F9FC":"#fff";x.fillRect(pad,yy,W-pad*2,rowH);
+  x.fillStyle="#1B2433";x.font="11px Tahoma,Arial";
+  var v=[String(r.d||"—"),(r.w||"—"),String(r.p||"—"),num(r.av)?money(r.av):"—",num(r.dp)?money(r.dp):"—",num(r.py)?money(r.py):"—"];
+  v.forEach(function(t,j){x.fillText(t,W-pad-cw/2-(j*cw),yy+20)})});
+ x.strokeStyle="#E3E7ED";x.strokeRect(pad,ty,W-pad*2,34+rows.length*rowH);
+ x.fillStyle="#6B7587";x.font="11px Tahoma,Arial";
+ x.fillText("المتبقي = المستحق − (أفونس + مدفوعات)",W/2,ty+34+rows.length*rowH+26);
+ x.fillText(new Date().toLocaleDateString("ar-DZ"),W/2,ty+34+rows.length*rowH+44);
+ var url=c.toDataURL("image/png");
+ var a=document.createElement("a");a.href=url;a.download="كشف-الحساب-"+ck+".png";document.body.appendChild(a);a.click();a.remove();
+ toast("🖼️ نُزّلت الصورة (كشف-الحساب-"+ck+".png)")
+ }catch(e){toast("⚠️ تعذّر إنشاء الصورة")}}
+
+/* ===== الربط ===== */
+function bind(){
+ var n=Q("nav");if(n)n.onclick=function(e){var b=e.target.closest("button");if(!b)return;var g=b.getAttribute("data-go");
+   if(g)go(g);else{var id=b.getAttribute("data-s");if(id===sk0){stmt();return}var k=sk[+id];if(k)go(k)}};
+ [["hmPrev",-1],["tmPrev",-1],["hmNext",1],["tmNext",1]].forEach(function(a){var b=Q(a[0]);if(b)b.onclick=function(){shiftMonth(a[1])}});
+ [["hmSel",1],["tmSel",1]].forEach(function(a){var b=Q(a[0]);if(b)b.onchange=function(){ck=b.value;save();go(cur())}});
+ var y=Q("hmGo");if(y)y.onclick=function(){go("table")};
+ var a1=Q("hmSt");if(a1)a1.onclick=function(){go("stats")};
+ var a2=Q("hmStm");if(a2)a2.onclick=function(){stmt()};
+ var b1=Q("tbStmt");if(b1)b1.onclick=function(){stmt()};
+ var b2=Q("tbToday");if(b2)b2.onclick=function(){var i=0,rows=D[ck]||[];var day=+today().slice(8);
+   var t=(today().slice(0,7)===ck)?day-1:(rows.findIndex(function(r){return empty(r)}));
+   if(t<0||t>29)t=rows.findIndex(function(r){return empty(r)});if(t<0)t=0;openForm(t)};
+ var tb=Q("tbBody");if(tb)tb.onclick=function(e){var tr=e.target.closest("tr");if(!tr)return;openForm(+tr.getAttribute("data-i"))};
+ var s=Q("fmSeg");if(s)s.onclick=function(e){var b=e.target.closest("button");if(!b)return;
+   var c=s.children;for(var i=0;i<c.length;i++)c[i].classList.remove("on");b.classList.add("on");liveRate()};
+ ["fmPlace","fmDp"].forEach(function(k){var e=Q(k);if(e)e.oninput=liveRate});
+ var g1=Q("fmGps");if(g1)g1.onclick=function(){toast("📍 جاري تحديد الموقع…");gps(function(la,lo){var nn=nearest(la,lo);Q("fmPlace").value=nn.n;liveRate();toast("📍 "+nn.n)})};
+ var f1=Q("fmSave");if(f1)f1.onclick=saveDay;
+ var f2=Q("fmCancel");if(f2)f2.onclick=function(){go("table")};
+ var f3=Q("fmBack");if(f3)f3.onclick=function(){go("table")};
+ var f4=Q("fmDel");if(f4)f4.onclick=function(){if(confirm("مسح بيانات هذا اليوم؟"))delDay()};
+ var t1=Q("tlCopy");if(t1)t1.onclick=copyTable;
+ var t2=Q("tlYear");if(t2)t2.onclick=addYear;
+ var t3=Q("tlMove");if(t3)t3.onclick=function(){go("move")};
+ var t4=Q("tlBak");if(t4)t4.onclick=function(){go("backup")};
+ var t5=Q("tlCsv");if(t5)t5.onclick=function(){go("excel")};
+ var t6=Q("tlStmt");if(t6)t6.onclick=function(){stmt()};
+ var t7=Q("tlStats");if(t7)t7.onclick=function(){go("stats")};
+ var t8=Q("tlClear");if(t8)t8.onclick=clearMonth;
+ var t9=Q("tlClose");if(t9)t9.onclick=function(){go("main")};
+ var t0=Q("tlBack");if(t0)t0.onclick=function(){go("main")};
+ var w1=Q("wxUpd"),w2=Q("wxU");if(w1)w1.onclick=function(){toast("🔄 جاري التحديث…");updWx(false)};if(w2)w2.onclick=function(){toast("🔄 جاري التحديث…");updWx(false)};
+ var w3=Q("wxSave");if(w3)w3.onclick=function(){if(wit)updWx(true);else{toast("🔄 حدّد الموقع أولاً");updWx(true)}};
+ var w4=Q("wxBack");if(w4)w4.onclick=function(){go("settings")};
+ var g2=Q("stgBack"),g3=Q("stgX");if(g2)g2.onclick=function(){go("main")};if(g3)g3.onclick=function(){go("main")};
+ var g4=Q("stgEdit");if(g4)g4.onclick=editName;
+ var g5=Q("stgNt");if(g5)g5.onclick=function(){S.notify=!S.notify;saveS();g5.classList.toggle("on",S.notify);toast(S.notify?"🔔 التنبيه مُشغَّل":"🔕 التنبيه مُوقَف");if(S.notify&&"Notification" in window&&Notification.permission==="default")Notification.requestPermission()};
+ var g6=Q("stgTh");if(g6)g6.onclick=function(){var d=document.documentElement.getAttribute("data-theme")==="dark";S.theme=d?"light":"dark";saveS();applyTheme();g6.classList.toggle("on",!d);toast(d?"☀️ الوضع النهاري":"🌙 الوضع الليلي")};
+ ["stgPs","stgPt","stgPd"].forEach(function(id){var e=Q(id);if(e)e.onchange=function(){S[id==="stgPs"?"ps":(id==="stgPt"?"pt":"pd")]=num(e.value)||num(S[id==="stgPs"?"ps":(id==="stgPt"?"pt":"pd")]);saveS();rTable();liveRate();toast("✅ حُدّثت الأسعار")}});
+ var g7=Q("stgLang");if(g7)g7.onclick=function(){toast("🌐 الواجهة العربية — لغات أخرى قيد الإضافة")};
+ var g8=Q("stgAbout");if(g8)g8.onclick=function(){openOv('<h3>حول التطبيق</h3><div style="text-align:center;line-height:2">👷<br><b>سجل العمل</b><br><span style="color:var(--mut);font-size:12px">الإصدار 2.0 — تشغيل بلا إنترنت</span></div><div class="hint" style="margin-top:10px">تطبيق لتسجيل أيام العمل والمواقع والمستحقات، مع كشف حساب جاهز للطباعة والإرسال. بياناتك محليّة على جهازك فقط.</div><button class="btn gh" style="margin-top:12px" onclick="SIJ.close()">إغلاق</button>')};
+ var g9=Q("stgBak");if(g9)g9.onclick=function(){go("backup")};
+ var g10=Q("stgWeather");if(g10)g10.onclick=function(){go("weather")};
+ var g11=Q("stgPlaces");if(g11)g11.onclick=function(){go("places")};
+ var g12=Q("stgPriv");if(g12)g12.onclick=function(){openOv('<h3>سياسة الخصوصية</h3><div style="font-size:12.5px;line-height:2">• لا يُرسل التطبيق بياناتك إلى أي جهة: كل شيء يُخزَّن في متصفح جهازك (localStorage).<br>• لا حسابات ولا إعلانات ولا أدوات تتبّع.<br>• الطقس يُطلب من خدمة Open-Meteo باستخدام إحداثيات موقعك فقط عند طلبك.<br>• النسخة الاحتياطية ملف يُحفظ على جهازك أنت.<br>• لحذف كل شيء: الإعدادات ← مسح كل البيانات.</div><button class="btn gh" style="margin-top:12px" onclick="SIJ.close()">إغلاق</button>')};
+ var g13=Q("stgClear");if(g13)g13.onclick=function(){if(!confirm("سيتم حذف كل البيانات من هذا الجهاز نهائياً. متابعة؟"))return;
+   try{localStorage.removeItem(K);localStorage.removeItem("wl-places")}catch(e){}D={};ensure(+today().slice(0,4));ck=today().slice(0,7);save();toast("🗑️ مُسحت كل البيانات");go("main")};
+ var k1=Q("bkBack"),k2=Q("bkClose");if(k1)k1.onclick=function(){go("settings")};if(k2)k2.onclick=function(){go("settings")};
+ var k3=Q("bkExp");if(k3)k3.onclick=doExport;
+ var k4=Q("bkImp");if(k4)k4.onclick=function(){Q("bkFile").click()};
+ var k5=Q("bkFile");if(k5)k5.onchange=function(e){var f=e.target.files&&e.target.files[0];if(f)doImport(f);e.target.value=""};
+ var k6=Q("bkGd");if(k6)k6.onclick=function(){toast("☁️ اربط Google Drive من إعدادات المتصفح — أو نزّل الملف وأرسله لنفسك")};
+ var e1=Q("exBack"),e2=Q("exCancel");if(e1)e1.onclick=function(){go("tools")};if(e2)e2.onclick=function(){go("tools")};
+ var eb=Q("exCols");if(eb)eb.onclick=function(e){var c=e.target.closest(".cb");if(!c)return;c.classList.toggle("on")};
+ var e3=Q("exGo");if(e3)e3.onclick=doCsv;
+ var p1=Q("plBack");if(p1)p1.onclick=function(){go("settings")};
+ var pt=Q("plTabs");if(pt)pt.onclick=function(e){var b=e.target.closest("button");if(!b)return;var c=pt.children;for(var i=0;i<c.length;i++)c[i].classList.remove("on");b.classList.add("on");rPlaces()};
+ var p2=Q("plAdd");if(p2)p2.onclick=addPlace;
+ var v1=Q("mvBack"),v2=Q("mvCancel");if(v1)v1.onclick=function(){go("tools")};if(v2)v2.onclick=function(){go("tools")};
+ var v3=Q("mvGo");if(v3)v3.onclick=doMove;
+ var q1=Q("ssBack");if(q1)q1.onclick=function(){go("main")};
+ var qt=Q("ssTabs");if(qt)qt.onclick=function(e){var b=e.target.closest("button");if(!b)return;var c=qt.children;for(var i=0;i<c.length;i++)c[i].classList.remove("on");b.classList.add("on");rStats()};
+ var q2=Q("ssStmt");if(q2)q2.onclick=function(){stmt()};
+ var i1=Q("biBack"),i2=Q("biClose");if(i1)i1.onclick=function(){go("backup")};if(i2)i2.onclick=function(){go("backup")};
+ var i3=Q("biGd");if(i3)i3.onclick=function(){toast("☁️ نزّل الملف وارفعه على Drive — الربط التلقائي يحتاج إعداد حساب مطوّر")};
+ var l1=Q("lgIn");if(l1)l1.onclick=function(){go("main")};
+ var l2=Q("lgNew");if(l2)l2.onclick=editName;
+}
+var sk0="stmt",sk={};  /* غير مستخدمة — تُبقي الربط بسيطاً */
+
+/* ===== الإقلاع ===== */
+try{load()}catch(e){}
+try{applyTheme()}catch(e){}
+try{bind()}catch(e){}
+try{go("login")}catch(e){}
+try{Q("tmSel")&&fillMons(Q("tmSel"))}catch(e){}
+try{document.documentElement.classList.remove("wait")}catch(e){}
+function killSpl(){try{var s=Q("spl");if(s&&s.parentNode)s.parentNode.removeChild(s)}catch(e){}}
+try{setTimeout(function(){var s=Q("spl");if(s){s.style.transition="opacity .4s";s.style.opacity="0";setTimeout(killSpl,420)}},2400);}catch(e){}
+window.addEventListener("error",function(){setTimeout(killSpl,1400)});
+setTimeout(killSpl,6000);
+setTimeout(function(){if(Q("lgName"))Q("lgName").textContent=nm},50);
+window.SIJ={close:closeOv,go:go,stmt:stmt,toast:toast,seg:segv,save:save,load:load};
+})();
+</script>
+<script>/* wl-pressure-fix: يملأ الضغط الجوي الصحيح */ (function(){function fix(){try{var p=document.getElementById('wxP'),c=document.getElementById('wxCoord');if(!p||!c)return;var m=/^(-?[0-9.]+)[^0-9]*(N|S)?\s*,\s*(-?[0-9.]+)/.exec(c.textContent.replace(/\s+/g,' ').trim());if(!m)return;var cur=p.textContent||'';if(/hPa/.test(cur)&&parseInt(cur,10)>800)return;fetch('https://api.open-meteo.com/v1/forecast?latitude='+m[1]+'&longitude='+m[3]+'&current=surface_pressure').then(function(r){return r.json()}).then(function(d){var v=d&&d.current&&d.current.surface_pressure;if(v)p.textContent=Math.round(v)+' hPa'}).catch(function(){})}catch(e){}}var b=document.getElementById('wxUpd');if(b)b.addEventListener('click',function(){setTimeout(fix,1200);setTimeout(fix,3200)});window.addEventListener('load',function(){setTimeout(fix,1600)})})();</script>
+</body>
+</html>
